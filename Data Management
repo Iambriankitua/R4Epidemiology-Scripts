@@ -1,0 +1,60 @@
+# Load tidyverse for data manipulation
+install.packages("tidyverse")   # install if not present
+library(tidyverse)
+
+# Example data frame
+df <- tibble(
+  id      = 1:10,
+  age     = c(23, 35, 40, NA, 27, 50, 31, 29, 39, NA),
+  gender  = c("M", "F", "F", "M", "F", "F", "M", "M", "F", "M"),
+  income  = c(50000, 62000, 58000, 72000, 45000, 80000, 55000, 49000, 71000, 63000)
+)
+
+head(df)
+df <- df %>%
+  mutate(
+    age_group = case_when(
+      age < 30 ~ "Young",
+      age >= 30 & age < 50 ~ "Middle",
+      TRUE ~ "Older"
+    ),
+    income_k = income / 1000  # income in thousands
+  )
+
+df
+# Keep only rows with non-missing age and gender "F"
+df_female <- df %>%
+  filter(!is.na(age) & gender == "F")
+
+# Select only important columns
+df_female <- df_female %>%
+  select(id, age, age_group, income_k)
+library(lubridate)
+
+# Add a date column
+df <- df %>%
+  mutate(
+    visit_date = ymd("2024-01-01") + days(id*10),
+    year = year(visit_date),
+    month = month(visit_date, label = TRUE)
+  )
+
+df
+library(stringr)
+
+# Example character column
+df$name <- c("Alice A", "Bob B.", "Charlie C", "Dana D", 
+             "Eva", "Frank F", "George G", "Hannah H", 
+             "Ivy", "Jack J")
+
+# Clean whitespace & remove initials
+df <- df %>%
+  mutate(
+    name_clean = str_trim(name),
+    name_lower = str_to_lower(name_clean),
+    name_first = word(name_clean, 1)
+  )
+
+df
+
+df_female
