@@ -1,0 +1,68 @@
+library(dplyr)
+library(stringr)
+
+data <- data.frame(
+  name = c("Ryan Edwards ", "ARABELLA GEORGE", "Weston Fox,"),
+  city = c("City of Fort Worth", "FORT WORTH", "KELLER")
+)
+
+# Trim spaces
+data$name <- str_trim(data$name)
+
+# Convert to lowercase
+data <- data %>%
+  mutate(
+    name = tolower(name),
+    city = tolower(city)
+  )
+
+# Remove unwanted text
+data$city <- str_replace(data$city, "city of ", "")
+
+data
+library(dplyr)
+
+blood_pressure <- data.frame(
+  id = 1:5,
+  sysbp = c(110,125,135,150,118),
+  diasbp = c(70,75,85,95,80)
+)
+
+blood_pressure <- blood_pressure %>%
+  mutate(
+    category = case_when(
+      sysbp < 120 & diasbp < 80 ~ "Normal",
+      sysbp >= 120 & sysbp < 130 & diasbp < 80 ~ "Elevated",
+      sysbp >= 130 | diasbp >= 80 ~ "Hypertension"
+    )
+  )
+library(dplyr)
+
+demographics <- data.frame(
+  id = c(1,2,3),
+  age = c(35,42,29)
+)
+
+lab_results <- data.frame(
+  id = c(1,2,3),
+  cholesterol = c(210,190,180)
+)
+
+# Merge datasets
+study_data <- demographics %>%
+  left_join(lab_results, by = "id")
+
+study_data
+library(dplyr)
+
+study <- data.frame(
+  age = c(30,25,40),
+  weight = c(70,65,80),
+  height = c(170,165,175)
+)
+
+# Calculate mean for multiple columns
+study %>%
+  summarise(across(c(age, weight, height), mean))
+
+blood_pressure
